@@ -1,0 +1,19 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables de entorno (contiene credenciales)
+.env
+
+# Logs
+logs/
+*.log
+
+# Archivos Excel excepto la plantilla
+*.xlsx
+!facturador_template.xlsx
+~$*.xlsx

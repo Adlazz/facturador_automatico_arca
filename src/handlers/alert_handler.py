@@ -47,6 +47,7 @@ class AlertHandler:
             
             # Lista de estrategias a intentar
             strategies = [
+                self._handle_jquery_ui_button,  # Nuevo botón de ARCA
                 self._handle_simple_alert,
                 self._handle_wait_alert,
                 self._handle_popup_window,
@@ -94,7 +95,7 @@ class AlertHandler:
         try:
             main_window = driver.current_window_handle
             WebDriverWait(driver, self.wait_time).until(lambda d: len(d.window_handles) > 1)
-            
+
             for handle in driver.window_handles:
                 if handle != main_window:
                     driver.switch_to.window(handle)
@@ -107,6 +108,26 @@ class AlertHandler:
             return False
         except Exception:
             return False
+
+    def _handle_jquery_ui_button(self, driver):
+        """Maneja un botón de confirmación jQuery UI"""
+        try:
+            # Buscar el botón jQuery UI con el texto "Confirmar"
+            button = WebDriverWait(driver, self.wait_time).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only']//span[text()='Confirmar']"))
+            )
+            button.click()
+            return True
+        except Exception:
+            # Intentar con un selector más flexible
+            try:
+                button = WebDriverWait(driver, self.wait_time).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'ui-button')]//span[contains(text(), 'Confirmar')]"))
+                )
+                button.click()
+                return True
+            except Exception:
+                return False
     
     def _handle_js_alert(self, driver):
         """Maneja una alerta usando JavaScript"""

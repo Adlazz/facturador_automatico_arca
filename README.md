@@ -84,57 +84,75 @@ El sistema:
 
 ## 📝 Configuración del Excel
 
-Coloca tu archivo Excel con las facturas en la raíz del proyecto con el nombre `facturador_test.xlsx`.
+Coloca tu archivo Excel con las facturas en la raíz del proyecto con el nombre **`facturador.xlsx`**.
 
-El archivo debe seguir la estructura definida en `facturador_template.xlsx`.
+### Estructura del Excel
 
-## ⚙️ Configuración Específica del Facturador
+El archivo debe contener las siguientes columnas (A-L):
 
-Este facturador está configurado para un caso de uso específico. Si necesitas adaptarlo, modifica estos valores en `src/services/invoice_processor.py`:
+| Columna | Nombre | Descripción | Ejemplo |
+|---------|--------|-------------|---------|
+| A | Cliente | Nombre del cliente | Juan Pérez |
+| B | CUIT | CUIT sin guiones | 20123456789 |
+| C | Cond_IVA | Condición IVA (RI/CF/M/E) | RI |
+| D | Importe | Monto sin IVA | 10000 |
+| E | IVA | Monto de IVA | 2100 |
+| F | TOTAL | Total de la factura | 12100 |
+| G | Rendicion | Número de rendición | 123 |
+| H | Fecha | Fecha del comprobante | 15/01/2024 |
+| I | Periodo | Periodo a facturar | Enero 2024 |
+| J | Realizado | Marca de procesamiento (✓) | |
+| K | Pto Venta | Punto de venta AFIP | 4 |
+| L | Cod. Actividad | Código de actividad AFIP | 682091 |
 
-### Punto de Venta
-**Línea 97:** `"4"` - Punto de venta número 4
-```python
-self.handler.safe_select("puntodeventa", "4", description="Punto de Venta")
-```
+**Notas importantes:**
+- Las columnas **Pto Venta** y **Cod. Actividad** permiten configurar valores específicos por cada factura
+- Si no se especifican, el punto de venta por defecto es `4`
+- El sistema marca automáticamente las facturas procesadas con ✓ en la columna "Realizado"
+
+## ⚙️ Configuración del Facturador
+
+### Valores Configurables desde el Excel
+
+El sistema ahora permite configurar por factura (desde el Excel `facturador.xlsx`):
+
+- **Punto de Venta** (Columna K): Configurable por cada factura
+- **Código de Actividad** (Columna L): Configurable por cada factura
+
+### Valores Automáticos
+
+El sistema configura automáticamente los siguientes valores:
 
 ### Tipo de Comprobante
-**Línea 103:** Se selecciona automáticamente según condición IVA:
-- Factura A (`"10"`) para Responsable Inscripto o Monotributista
-- Factura B (`"19"`) para Consumidor Final o Exento
+Se selecciona automáticamente según condición IVA:
+- Factura A (`"10"`) para Responsable Inscripto (RI) o Monotributista (M)
+- Factura B (`"19"`) para Consumidor Final (CF) o Exento (E)
 
 ### Concepto
-**Línea 128:** `"2"` - Servicios
-```python
-self.handler.safe_select("idconcepto", "2", description="Concepto")
-```
-
-### Actividad AFIP
-**Línea 136:** `"682091"` - Actividad de intermediación financiera
-```python
-self.handler.safe_select("actiAsociadaId", "682091", description="Actividad")
-```
+`"2"` - Servicios (fijo)
 
 ### Descripción del Comprobante
-**Línea 249:** Genera automáticamente:
+Genera automáticamente:
 ```
 Comisiones por cobranzas Mes de {periodo} - Rendición N° {numero}
 ```
-```python
-descripcion = f"Comisiones por cobranzas Mes de {factura.periodo} - Rendición N° {str(factura.rendicion).strip()}"
-```
 
 ### Forma de Pago
-**Línea 213:** Contado (automático)
+Contado (automático)
 
 ### Unidad de Medida
-**Línea 258:** `"98"` - Unidad genérica
-```python
-self.handler.safe_select("detalle_medida1", "98", description="Unidad de Medida")
-```
+`"98"` - Unidad genérica
 
 ### IVA
-**Línea 275:** Para Factura B, se aplica automáticamente IVA 21% (`"5"`)
+Para Factura B, se aplica automáticamente IVA 21% (`"5"`)
+
+### 📁 Ubicación de los PDFs
+
+Los comprobantes generados se guardan automáticamente en el **Escritorio** con el formato:
+```
+{Cliente} x Honorarios {Periodo} - Rendición N° {Numero}.pdf
+```
+Ejemplo: `Juan Pérez x Honorarios Enero 2024 - Rendición N° 123.pdf`
 
 ## 📦 Dependencias principales
 

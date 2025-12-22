@@ -94,8 +94,8 @@ class InvoiceProcessor:
             # Seleccionar Punto de Venta
             if not self.handler.safe_select(
                 "puntodeventa",
-                "4",
-                description="Punto de Venta"
+                factura.pto_venta,
+                description=f"Punto de Venta ({factura.pto_venta})"
             ):
                 return False
 
@@ -133,7 +133,7 @@ class InvoiceProcessor:
             # Seleccionar Actividad
             if not self.handler.safe_select(
                 "actiAsociadaId",
-                "682091",
+                factura.cod_actividad,
                 description="Actividad"
             ):
                 return False

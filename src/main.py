@@ -37,7 +37,7 @@ def main():
         element_handler = ElementHandler(driver, wait)
         alert_handler = AlertHandler()
         processor = InvoiceProcessor(driver, element_handler, alert_handler)
-        excel_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "facturador_test.xlsx")
+        excel_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "facturador.xlsx")
         excel_handler = ExcelHandler(excel_file)
 
         # Cargar Excel y obtener facturas

@@ -19,6 +19,7 @@ class FacturaData:
     realizado: bool
     row_index: int
     pto_venta: str
+    cod_actividad: str
 
 class ExcelHandler:
     def __init__(self, excel_path: str):
@@ -36,7 +37,7 @@ class ExcelHandler:
             self.df = pd.read_excel(
                 self.excel_path,
                 header=0,
-                usecols="A:J",
+                usecols="A:L",
                 dtype=dtype_dict,
                 converters={
                     'CUIT': lambda x: str(x).split('.')[0],
@@ -59,7 +60,8 @@ class ExcelHandler:
                 'Rendicion': '',
                 'Periodo': '',
                 'Realizado': '',
-                'Pto Venta': '4'
+                'Pto Venta': '4',
+                'Cod. Actividad': ''
             })
             
             # Cargar workbook
@@ -154,7 +156,8 @@ class ExcelHandler:
                         periodo=str(row['Periodo']).strip(),
                         realizado=False,
                         row_index=index + 2,
-                        pto_venta=str(row.get('Pto Venta', '4')).strip().split('.')[0]
+                        pto_venta=str(row.get('Pto Venta', '4')).strip().split('.')[0],
+                        cod_actividad=str(row.get('Cod. Actividad', '')).strip().split('.')[0]
                     )
                     
                     # Solo agregar si todos los datos son válidos
@@ -250,7 +253,7 @@ class ExcelHandler:
 
 def main():
     """Función principal para pruebas"""
-    excel_handler = ExcelHandler("facturador_test.xlsx")
+    excel_handler = ExcelHandler("facturador.xlsx")
     if excel_handler.load_excel():
         facturas = excel_handler.get_facturas_pendientes()
         print(f"\nSe encontraron {len(facturas)} facturas pendientes")

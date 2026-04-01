@@ -30,7 +30,7 @@ Sistema automatizado para la generación de comprobantes en línea en AFIP utili
 1. **Clonar el repositorio**
    ```bash
    git clone <url-del-repositorio>
-   cd "Comprobantes_En_Linea_Auto"
+   cd "facturador_automatico_arca"
    ```
 
 2. **Crear y activar entorno virtual**
